@@ -27,9 +27,9 @@ class Duration:
         return self
 
     def __exit__(self, exc_type, exc_value, trback):
-        print('{} in {} ({}-{})'.format(
+        print(('{} in {} ({}-{})'.format(
             datetime.datetime.now()-self.start_time,
-            self.name, self.start_time, datetime.datetime.now()))
+            self.name, self.start_time, datetime.datetime.now())))
 
 
 def repr_timespan(start, end):

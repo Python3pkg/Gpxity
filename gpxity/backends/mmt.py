@@ -124,7 +124,7 @@ class ParseMMTActivity(HTMLParser): # pylint: disable=abstract-method
                 _ = data.split('|')[1].split('@')[0].strip()
                 self.result['what_from_title'] = ' '.join(_.split(' ')[:-2])
             except BaseException:
-                print('cannot parse', data)
+                print(('cannot parse', data))
                 self.result['what_from_title'] = ''
         if self.seeing_status:
             self.result['public'] = data.strip() != 'Only you can see this activity'
@@ -244,7 +244,7 @@ class MMT(Backend):
             else:
                 response = requests.post(full_url, data=data, headers=headers, auth=self.auth, timeout=(5, 300))
         except requests.exceptions.ReadTimeout:
-            print('timeout for', data)
+            print(('timeout for', data))
             raise
         self._last_response = response # for debugging
         if response.status_code != requests.codes.ok: # pylint: disable=no-member
@@ -257,7 +257,7 @@ class MMT(Backend):
             try:
                 result = ElementTree.fromstring(result)
             except ElementTree.ParseError:
-                print('POST {} has parse error: {}'.format(data, response.text))
+                print(('POST {} has parse error: {}'.format(data, response.text)))
                 raise
             result_type = result.find('type')
             if result_type is not None and result_type.text == 'error':
@@ -361,9 +361,9 @@ class MMT(Backend):
         values = value.split(',')
         tags = (text.find('tags').text or '').split(',')
         if values != tags or len(ids) != len(values):
-            print('ids:', ids)
-            print('values:', values)
-            print('tags:', tags)
+            print(('ids:', ids))
+            print(('values:', values))
+            print(('tags:', tags))
         else:
             for key, id_ in zip(values, ids):
                 self._found_tag_id(key, id_)
@@ -450,7 +450,7 @@ class MMT(Backend):
                     _ = ''
                 activity.description = _
             if page_scan['tags']:
-                activity.keywords = page_scan['tags'].keys()
+                activity.keywords = list(page_scan['tags'].keys())
             # MMT sends different values of the current activity type, hopefully what_3 is always the
             # correct one.
             if page_scan['what_3']:

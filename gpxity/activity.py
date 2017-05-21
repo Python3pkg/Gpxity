@@ -401,8 +401,8 @@ class Activity:
             try:
                 self.__gpx = gpxpy.parse(indata)
             except GPXXMLSyntaxException as exc:
-                print('{}: Activity {} has illegal GPX XML: {}'.format(
-                    self.backend, self.id_in_backend, exc))
+                print(('{}: Activity {} has illegal GPX XML: {}'.format(
+                    self.backend, self.id_in_backend, exc)))
                 raise
             self._parse_keywords()
             self.public = self.public or old_public
@@ -654,7 +654,7 @@ class Activity:
             return False
         if self.angle() != other.angle():
             return False
-        for _, (point1, point2) in enumerate(zip(self.all_points(), other.all_points())):
+        for _, (point1, point2) in enumerate(list(zip(self.all_points(), other.all_points()))):
             # GPXTrackPoint has no __eq__ and no working hash()
             # those are only the most important attributes:
             if point1.longitude != point2.longitude:

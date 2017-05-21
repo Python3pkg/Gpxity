@@ -58,7 +58,7 @@ class Handler(BaseHTTPRequestHandler):
         """basic http authentication"""
         if self.users is None:
             self.load_users()
-        for pair in self.users.items():
+        for pair in list(self.users.items()):
             expect = b'Basic ' + base64.b64encode(':'.join(pair).encode('utf-8'))
             expect = expect.decode('utf-8')
             if expect == self.headers['Authorization']:
@@ -87,14 +87,14 @@ class Handler(BaseHTTPRequestHandler):
         """as the name says. Why do I have to implement this?"""
         if OPT.debug:
             print('got headers:')
-            for k,v in self.headers.items():
-                print('  ',k,v)
+            for k,v in list(self.headers.items()):
+                print(('  ',k,v))
         data_length = int(self.headers['Content-Length'])
         data = self.rfile.read(data_length).decode('utf-8')
         parsed = parse_qs(data)
         if OPT.debug:
-            print('got',parsed)
-        for key, value in parsed.items():
+            print(('got',parsed))
+        for key, value in list(parsed.items()):
             if len(value) != 1:
                 self.return_error(400, '{} must appear only once'.format(key))
             parsed[key] = parsed[key][0]
@@ -125,7 +125,7 @@ class Handler(BaseHTTPRequestHandler):
 
         self.send_header('Content-Type', 'text/xml; charset=UTF-8')
         if OPT.debug:
-            print('returning',xml)
+            print(('returning',xml))
         xml = '<?xml version="1.0" encoding="UTF-8"?><message>{}</message>'.format(xml)
         self.send_header('Content-Length', len(xml))
         self.end_headers()
@@ -207,8 +207,8 @@ class Handler(BaseHTTPRequestHandler):
         else:
             Handler.tracking_activity.add_points(self.__points(parsed['points']))
             if OPT.debug:
-                print('update_activity:',Handler.tracking_activity)
-                print('  last time:',Handler.tracking_activity.last_time)
+                print(('update_activity:',Handler.tracking_activity))
+                print(('  last time:',Handler.tracking_activity.last_time))
             return '<type>activity_updated</type>'
 
     def xml_stop_activity(self, parsed):

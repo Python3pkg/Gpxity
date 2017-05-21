@@ -61,14 +61,14 @@ class BackendDiff:
                 try:
                     key = key_lambda(_)
                 except TypeError:
-                    print('BackendDiffSide cannot apply key in {}: {}'.format(backend, _))
+                    print(('BackendDiffSide cannot apply key in {}: {}'.format(backend, _)))
                     key = None
                 self.entries[key].append(_)
             self.exclusive = dict()
 
         def _use_other(self, other):
             """use data from the other side"""
-            for _ in self.entries.keys():
+            for _ in list(self.entries.keys()):
                 if _ not in other.entries:
                     self.exclusive[_] = self.entries[_]
 
@@ -81,7 +81,7 @@ class BackendDiff:
         self.right = BackendDiff.BackendDiffSide(right, right_key)
         self.left._use_other(self.right) # pylint: disable=protected-access
         self.right._use_other(self.left) # pylint: disable=protected-access
-        self.keys_in_both = self.left.entries.keys() & self.right.entries.keys()
+        self.keys_in_both = list(self.left.entries.keys()) & list(self.right.entries.keys())
         self.matches = defaultdict(list)
         for _ in self.keys_in_both:
             self.matches[_].extend(self.left.entries[_])
@@ -361,7 +361,7 @@ class Backend:
             self.save(activity, ident=activity.id_in_backend if use_remote_ident else None)
         if remove:
             differ = BackendDiff(self, from_backend)
-            for activities in differ.left.exclusive.values():
+            for activities in list(differ.left.exclusive.values()):
                 for activity in activities:
                     self.remove(activity)
 
